@@ -32,7 +32,7 @@ Usage Example
     import (
         "fmt"
 
-        "github.com/lispad/go-generics-tools/binheap"
+        "github.com/WinnerSoftLab/go-generics-tools/binheap"
     )
     
     func main() {
@@ -75,7 +75,7 @@ Installation
 
 To install package, run:
 
-    go get github.com/lispad/go-generics-tools/binheap
+    go get github.com/WinnerSoftLab/go-generics-tools/binheap
 
 License
 -------

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/lispad/go-generics-tools/binheap"
+	"github.com/WinnerSoftLab/go-generics-tools/binheap"
 )
 
 func main() {

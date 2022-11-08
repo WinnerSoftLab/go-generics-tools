@@ -1,4 +1,4 @@
-module github.com/lispad/go-generics-tools
+module github.com/WinnerSoftLab/go-generics-tools
 
 go 1.18
 

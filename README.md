@@ -1,5 +1,5 @@
 # GoLang Generics tools: Heap structure, sharded rw-locked map.
-[![Go Report Card](https://goreportcard.com/badge/github.com/lispad/go-generics-tools)](https://goreportcard.com/report/github.com/lispad/go-generics-tools)
+[![Go Report Card](https://goreportcard.com/badge/github.com/WinnerSoftLab/go-generics-tools)](https://goreportcard.com/report/github.com/WinnerSoftLab/go-generics-tools)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Introduction
@@ -24,10 +24,10 @@ Installation
 
 To install package, run:
 
-    go get github.com/lispad/go-generics-tools/binheap
+    go get github.com/WinnerSoftLab/go-generics-tools/binheap
 or
 
-    go get github.com/lispad/go-generics-tools/smap
+    go get github.com/WinnerSoftLab/go-generics-tools/smap
 
 
 License

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/lispad/go-generics-tools/smap"
+	"github.com/WinnerSoftLab/go-generics-tools/smap"
 )
 
 func BenchmarkIntegerSMap_ConcurrentGet(b *testing.B) {

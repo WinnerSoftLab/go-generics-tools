@@ -23,7 +23,7 @@ Usage Example
     import (
         "fmt"
 
-        "github.com/lispad/go-generics-tools/smap"
+        "github.com/WinnerSoftLab/go-generics-tools/smap"
     )
     
     func main() {
@@ -73,7 +73,7 @@ Installation
 
 To install package, run:
 
-    go get github.com/lispad/go-generics-tools/smap
+    go get github.com/WinnerSoftLab/go-generics-tools/smap
 
 License
 -------

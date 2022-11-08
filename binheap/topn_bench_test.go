@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/exp/slices"
 
-	"github.com/lispad/go-generics-tools/binheap"
+	"github.com/WinnerSoftLab/go-generics-tools/binheap"
 )
 
 func BenchmarkSortedMaxN(b *testing.B) {

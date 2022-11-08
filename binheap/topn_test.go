@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/slices"
 
-	"github.com/lispad/go-generics-tools/binheap"
+	"github.com/WinnerSoftLab/go-generics-tools/binheap"
 )
 
 func TestMinN(t *testing.T) {
