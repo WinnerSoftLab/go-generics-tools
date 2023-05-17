@@ -120,6 +120,33 @@ func (sm Generic[K, V]) DeleteWhere(predicate func(K, V) bool) {
 	}
 }
 
+// DeleteWhereKeys deletes values according to predicate.
+func (sm Generic[K, V]) DeleteWhereKeys(predicate func(K) bool) {
+	keys := make([]K, 0)
+	toDelete := make([]K, 0)
+	for i := range sm.locks {
+		keys = keys[:0]
+		sm.locks[i].RLock()
+		for k := range sm.shards[i] {
+			keys = append(keys, k)
+		}
+		sm.locks[i].RUnlock()
+
+		toDelete = toDelete[:0]
+		for _, key := range keys {
+			if predicate(key) {
+				toDelete = append(toDelete, key)
+			}
+		}
+
+		sm.locks[i].Lock()
+		for _, key := range toDelete {
+			delete(sm.shards[i], key)
+		}
+		sm.locks[i].Unlock()
+	}
+}
+
 // Range calls cb sequentially for each key and value present in the map.
 // If cb returns false, range stops the iteration.
 //
