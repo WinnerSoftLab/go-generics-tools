@@ -28,6 +28,51 @@ func TestGeneric_Delete(t *testing.T) {
 	assert.Equal(t, "", val)
 }
 
+func TestGeneric_DeleteWhere(t *testing.T) {
+	m := NewInteger[uint32, string](8, 128)
+	val, ok := m.Load(123)
+	assert.False(t, ok)
+	assert.Equal(t, "", val)
+
+	m.DeleteWhere(func(k uint32, v string) bool {
+		return true
+	})
+	val, ok = m.Load(123)
+	assert.False(t, ok)
+	assert.Equal(t, "", val)
+
+	m.Store(123, "value set")
+	val, ok = m.Load(123)
+	assert.True(t, ok)
+	assert.Equal(t, "value set", val)
+
+	m.Store(124, "value set 2")
+	val, ok = m.Load(124)
+	assert.True(t, ok)
+	assert.Equal(t, "value set 2", val)
+
+	m.Store(125, "value set 3")
+	val, ok = m.Load(125)
+	assert.True(t, ok)
+	assert.Equal(t, "value set 3", val)
+
+	m.DeleteWhere(func(k uint32, v string) bool {
+		return k%2 == 1
+	})
+
+	val, ok = m.Load(123)
+	assert.False(t, ok)
+	assert.Equal(t, "", val)
+
+	val, ok = m.Load(124)
+	assert.True(t, ok)
+	assert.Equal(t, "value set 2", val)
+
+	val, ok = m.Load(125)
+	assert.False(t, ok)
+	assert.Equal(t, "", val)
+}
+
 func TestGeneric_GetAndDelete(t *testing.T) {
 	m := NewInteger[uint32, string](8, 128)
 	m.Store(123, "value set")
