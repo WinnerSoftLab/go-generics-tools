@@ -89,6 +89,64 @@ func (sm Generic[K, V]) Delete(key K) {
 	sm.locks[shardID].Unlock()
 }
 
+// DeleteWhere deletes values according to predicate.
+func (sm Generic[K, V]) DeleteWhere(predicate func(K, V) bool) {
+	keys := make([]K, 0)
+	toDelete := make([]K, 0)
+	for i := range sm.locks {
+		keys = keys[:0]
+		sm.locks[i].RLock()
+		for k := range sm.shards[i] {
+			keys = append(keys, k)
+		}
+		sm.locks[i].RUnlock()
+
+		toDelete = toDelete[:0]
+		for _, key := range keys {
+			sm.locks[i].RLock()
+			value, ok := sm.shards[i][key]
+			sm.locks[i].RUnlock()
+
+			if ok && predicate(key, value) {
+				toDelete = append(toDelete, key)
+			}
+		}
+
+		sm.locks[i].Lock()
+		for _, key := range toDelete {
+			delete(sm.shards[i], key)
+		}
+		sm.locks[i].Unlock()
+	}
+}
+
+// DeleteWhereKeys deletes values according to predicate.
+func (sm Generic[K, V]) DeleteWhereKeys(predicate func(K) bool) {
+	keys := make([]K, 0)
+	toDelete := make([]K, 0)
+	for i := range sm.locks {
+		keys = keys[:0]
+		sm.locks[i].RLock()
+		for k := range sm.shards[i] {
+			keys = append(keys, k)
+		}
+		sm.locks[i].RUnlock()
+
+		toDelete = toDelete[:0]
+		for _, key := range keys {
+			if predicate(key) {
+				toDelete = append(toDelete, key)
+			}
+		}
+
+		sm.locks[i].Lock()
+		for _, key := range toDelete {
+			delete(sm.shards[i], key)
+		}
+		sm.locks[i].Unlock()
+	}
+}
+
 // Range calls cb sequentially for each key and value present in the map.
 // If cb returns false, range stops the iteration.
 //
@@ -126,6 +184,18 @@ func (sm Generic[K, V]) Range(cb func(K, V) bool) {
 // ShardID returns shard number for given key.
 func (sm Generic[K, V]) ShardID(key K) int {
 	return sm.shardDetector(key)
+}
+
+// Len returns number of elements
+func (sm Generic[K, V]) Len() int {
+	result := 0
+	for i := range sm.locks {
+		sm.locks[i].RLock()
+		result += len(sm.shards[i])
+		sm.locks[i].RUnlock()
+	}
+
+	return result
 }
 
 // ShardsCount returns shards count, given on initialisation.

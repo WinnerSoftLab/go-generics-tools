@@ -28,6 +28,77 @@ func TestGeneric_Delete(t *testing.T) {
 	assert.Equal(t, "", val)
 }
 
+func TestGeneric_DeleteWhere(t *testing.T) {
+	predicate := func(key uint32) bool {
+		return key%2 == 1
+	}
+
+	cases := []struct {
+		name       string
+		deleteFrom func(generic Generic[uint32, string])
+	}{
+		{
+			"DeleteWhere",
+			func(m Generic[uint32, string]) {
+				m.DeleteWhere(func(k uint32, v string) bool {
+					return predicate(k)
+				})
+			},
+		},
+		{
+			"DeleteWhereKeys",
+			func(m Generic[uint32, string]) {
+				m.DeleteWhereKeys(func(k uint32) bool {
+					return predicate(k)
+				})
+			},
+		},
+	}
+
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			m := NewInteger[uint32, string](8, 128)
+			val, ok := m.Load(123)
+			assert.False(t, ok)
+			assert.Equal(t, "", val)
+
+			test.deleteFrom(m)
+			val, ok = m.Load(123)
+			assert.False(t, ok)
+			assert.Equal(t, "", val)
+
+			m.Store(123, "value set")
+			val, ok = m.Load(123)
+			assert.True(t, ok)
+			assert.Equal(t, "value set", val)
+
+			m.Store(124, "value set 2")
+			val, ok = m.Load(124)
+			assert.True(t, ok)
+			assert.Equal(t, "value set 2", val)
+
+			m.Store(125, "value set 3")
+			val, ok = m.Load(125)
+			assert.True(t, ok)
+			assert.Equal(t, "value set 3", val)
+
+			test.deleteFrom(m)
+
+			val, ok = m.Load(123)
+			assert.False(t, ok)
+			assert.Equal(t, "", val)
+
+			val, ok = m.Load(124)
+			assert.True(t, ok)
+			assert.Equal(t, "value set 2", val)
+
+			val, ok = m.Load(125)
+			assert.False(t, ok)
+			assert.Equal(t, "", val)
+		})
+	}
+}
+
 func TestGeneric_GetAndDelete(t *testing.T) {
 	m := NewInteger[uint32, string](8, 128)
 	m.Store(123, "value set")
